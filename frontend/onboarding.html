@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Welcome · LUMEN</title>
+  <meta name="description" content="Three quick questions so Lumen knows how you like to work." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200..700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+  <main class="auth">
+    <div class="auth__brand brand">
+      <div class="brand__mark">LUMEN</div>
+      <div class="brand__tag">Music. Focus. Flow.</div>
+    </div>
+
+    <section class="panel auth__card auth__card--wide enter enter--1" aria-labelledby="step-title">
+      <div class="steps" aria-hidden="true">
+        <span class="steps__dot" data-step-dot="1" data-done="true"></span>
+        <span class="steps__dot" data-step-dot="2" data-done="false"></span>
+        <span class="steps__dot" data-step-dot="3" data-done="false"></span>
+        <span class="steps__count"><span data-step-now>1</span>/3</span>
+      </div>
+
+      <h1 class="auth__title" id="step-title" data-step-title>Welcome to Lumen</h1>
+      <p class="auth__sub" data-step-sub>Two things before you start.</p>
+
+      <!-- ---------- step 1: name + daily goal ---------- -->
+      <div data-step="1">
+        <label class="field">
+          <span class="field__label">Your name</span>
+          <input type="text" name="name" maxlength="80" autocomplete="name" placeholder="Your name" data-name />
+        </label>
+        <label class="field" style="margin-top: var(--sp-4)">
+          <span class="field__label">Daily focus goal (minutes)</span>
+          <input type="number" name="daily_goal_minutes" min="30" max="1440" step="5" inputmode="numeric" value="240" data-goal />
+        </label>
+        <p class="auth__sub">Anywhere from 30 minutes to a full day. You can change it later in Settings.</p>
+      </div>
+
+      <!-- ---------- step 2: default preset ---------- -->
+      <div data-step="2" hidden>
+        <div class="choices" role="group" aria-label="Default preset" data-presets></div>
+      </div>
+
+      <!-- ---------- step 3: a sound to start with ---------- -->
+      <div data-step="3" hidden>
+        <div class="choices" role="group" aria-label="Favourite sound" data-sounds aria-live="polite"></div>
+      </div>
+
+      <p class="auth__error" role="alert" data-error hidden></p>
+
+      <div class="auth__row">
+        <button class="auth__skip" type="button" data-back hidden>Back</button>
+        <a class="auth__skip" href="dashboard.html" data-skip>Skip for now</a>
+        <button class="auth__submit" type="button" style="flex: 1" data-next>Continue</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/onboarding.js"></script>
+</body>
+</html>

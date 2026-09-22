@@ -1,0 +1,159 @@
+/* ==========================================================================
+   LUMEN — music page
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Search + tabs strip
+   -------------------------------------------------------------------------- */
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 1;
+  min-width: 200px;
+  padding: 8px var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--panel-inset);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--text-faint);
+  transition: box-shadow var(--fast) var(--ease);
+}
+
+.search:focus-within {
+  box-shadow: inset 0 0 0 1px var(--ice-400), 0 0 0 3px var(--glow);
+  color: var(--ice-300);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-small);
+}
+.search input::placeholder { color: var(--text-faint); }
+.search input:focus-visible { outline: none; }
+
+.tabs {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--panel-inset);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.tabs button {
+  padding: 6px var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+.tabs button:hover { color: var(--text); }
+.tabs button[aria-pressed="true"] { background: var(--ice-200); color: #04080b; }
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+.music-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(280px, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.music-rail { display: flex; flex-direction: column; gap: var(--sp-4); }
+
+/* --------------------------------------------------------------------------
+   Playlists (rail)
+   -------------------------------------------------------------------------- */
+.playlist { border-radius: var(--r-md); transition: background var(--fast) var(--ease); }
+.playlist + .playlist { margin-top: 2px; }
+.playlist:hover { background: var(--line-soft); }
+
+.playlist__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+}
+
+.playlist__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 1;
+  min-width: 0;
+  text-align: start;
+  color: var(--text-soft);
+}
+.playlist__toggle:hover { color: var(--text); }
+
+.playlist__chevron { flex: none; color: var(--text-faint); transition: transform var(--fast) var(--ease); }
+.playlist__toggle[aria-expanded="true"] .playlist__chevron { transform: rotate(90deg); }
+
+.playlist__name {
+  font-size: var(--fs-small);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist__count {
+  flex: none;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.playlist__system { flex: none; font-size: 0.625rem; letter-spacing: 0.08em; color: var(--ice-600); }
+
+.playlist__tracks {
+  padding: 0 var(--sp-2) var(--sp-2) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.playlist__track {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+}
+
+.playlist__track span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .music-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .page-head { flex-direction: column; align-items: flex-start; }
+  .filters { flex-direction: column; align-items: stretch; }
+  .tabs { justify-content: space-between; }
+  .tracklist__badge,
+  .tracklist__time { display: none; }
+}

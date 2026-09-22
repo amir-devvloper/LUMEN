@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LUMEN</title>
+  <noscript><meta http-equiv="refresh" content="0; url=login.html" /></noscript>
+  <script>
+    /* Signed in -> dashboard, otherwise -> login. */
+    var signedIn = false;
+    try { signedIn = !!localStorage.getItem("lumen.token"); } catch (e) {}
+    location.replace(signedIn ? "dashboard.html" : "login.html");
+  </script>
+</head>
+<body style="background:#000"></body>
+</html>

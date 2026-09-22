@@ -1,0 +1,288 @@
+/* ==========================================================================
+   LUMEN — analytics page
+   ========================================================================== */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.tile {
+  padding: var(--sp-4);
+}
+
+.tile__label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.tile__value {
+  margin-top: var(--sp-2);
+  font-size: 1.75rem;
+  font-weight: 350;
+  letter-spacing: var(--track-tight);
+  color: var(--ice-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.tile__note {
+  margin-top: 4px;
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+}
+
+.tile__note--up { color: var(--up); }
+.tile__note--down { color: var(--warn); }
+
+/* --------------------------------------------------------------------------
+   Layout grid
+   -------------------------------------------------------------------------- */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.analytics-grid__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* --------------------------------------------------------------------------
+   Trend chart (weekly minutes)
+   -------------------------------------------------------------------------- */
+.trend { padding: var(--sp-5); }
+
+.trend__toggle {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--panel-inset);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.trend__toggle button {
+  padding: 6px var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+
+.trend__toggle button[aria-pressed="true"] {
+  background: var(--ice-200);
+  color: #04080b;
+}
+
+.trend__chart {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--sp-3);
+  align-items: end;
+  height: 190px;
+  margin: var(--sp-6) 0 var(--sp-2);
+}
+
+.trend__bar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--sp-2);
+}
+
+.trend__slot {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  min-height: 0;
+  position: relative;
+}
+
+.trend__fill {
+  width: 100%;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(180deg, var(--ice-600), var(--ice-900));
+  transition: height var(--med) var(--ease);
+}
+
+.trend__bar--peak .trend__fill {
+  background: linear-gradient(180deg, var(--ice-200), var(--ice-500));
+  box-shadow: 0 0 22px -6px var(--glow-strong);
+}
+
+.trend__value {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, -6px);
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.trend__bar--peak .trend__value { color: var(--ice-200); }
+
+.trend__day {
+  text-align: center;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+}
+
+.trend__bar--peak .trend__day { color: var(--ice-200); }
+
+.trend__foot {
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Heatmap — focus by time of day
+   -------------------------------------------------------------------------- */
+.heatmap { padding: var(--sp-5); }
+
+.heatmap__grid {
+  display: grid;
+  grid-template-columns: 52px repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: var(--sp-5);
+}
+
+.heatmap__corner {}
+
+.heatmap__col-label {
+  text-align: center;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+  padding-bottom: 4px;
+}
+
+.heatmap__row-label {
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+}
+
+.heatmap__cell {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  background: var(--ice-200);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.heatmap__legend {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+}
+
+.heatmap__legend-scale {
+  display: flex;
+  gap: 3px;
+}
+
+.heatmap__legend-scale span {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--ice-200);
+}
+
+/* --------------------------------------------------------------------------
+   Session mix (rail)
+   -------------------------------------------------------------------------- */
+.mix__row {
+  margin-top: var(--sp-4);
+}
+
+.mix__row:first-of-type { margin-top: var(--sp-5); }
+
+.mix__head {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-small);
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.mix__head span:last-child {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.mix__track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--panel-inset);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+
+.mix__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ice-600), var(--ice-200));
+}
+
+/* --------------------------------------------------------------------------
+   Top sounds (rail)
+   -------------------------------------------------------------------------- */
+.sounds__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+
+.sounds__rank {
+  width: 20px;
+  flex: none;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.sounds__art {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: var(--r-sm);
+  background: radial-gradient(circle at 50% 40%, var(--ice-400), #05090c 72%);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.sounds__name { font-size: var(--fs-small); color: var(--text); }
+.sounds__meta { font-size: var(--fs-micro); color: var(--text-faint); }
+
+.sounds__time {
+  margin-inline-start: auto;
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .analytics-grid { grid-template-columns: minmax(0, 1fr); }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .tiles { grid-template-columns: minmax(0, 1fr); }
+  .heatmap__grid { grid-template-columns: 34px repeat(7, minmax(0, 1fr)); }
+  .trend__chart { height: 150px; }
+}

@@ -1,0 +1,3 @@
+-- LUMEN — seed data for local development.
+-- Password for the demo account is "lumen1234" (scrypt-hashed at insert time
+-- by database/seed.js, not stored in plaintext here).

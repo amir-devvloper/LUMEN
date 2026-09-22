@@ -1,0 +1,294 @@
+/* ==========================================================================
+   LUMEN — dashboard page
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Grid
+   -------------------------------------------------------------------------- */
+.dash {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(280px, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.dash__rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* --------------------------------------------------------------------------
+   Focus session — the hero
+   -------------------------------------------------------------------------- */
+.session {
+  position: relative;
+  overflow: hidden;
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(147, 188, 210, 0.10), transparent 62%),
+    var(--panel);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-panel);
+  text-align: center;
+}
+
+.session__mode {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.16em;
+  color: var(--text-soft);
+}
+
+.session__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--ice-200);
+  box-shadow: 0 0 10px 1px var(--glow-strong);
+}
+
+/* ring -------------------------------------------------------------------- */
+.ring {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: var(--sp-5) auto var(--sp-5);
+}
+
+.ring__svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.ring__track {
+  fill: none;
+  stroke: #161c21;
+  stroke-width: 6;
+}
+
+.ring__progress {
+  fill: none;
+  stroke: url(#iceStroke);
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--glow));
+  transition: stroke-dashoffset var(--slow) var(--ease);
+}
+
+.ring__body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ring__time {
+  font-size: var(--fs-clock);
+  font-weight: 250;
+  letter-spacing: var(--track-tight);
+  line-height: 1;
+  color: var(--ice-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.ring__meta { font-size: var(--fs-micro); letter-spacing: 0.1em; color: var(--text-soft); }
+.ring__share { font-size: var(--fs-micro); color: var(--text-faint); }
+
+/* controls ----------------------------------------------------------------- */
+.session__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+}
+
+.session__next {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Stat strip
+   -------------------------------------------------------------------------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-5);
+  margin-top: var(--sp-5);
+  padding: 0 var(--sp-2);
+}
+
+.stat__label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+.stat__value {
+  margin-top: 6px;
+  font-size: var(--fs-h2);
+  font-weight: 350;
+  letter-spacing: var(--track-tight);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__note { margin-top: 2px; font-size: var(--fs-micro); color: var(--text-muted); }
+.stat__note--up { color: var(--up); }
+.stat__note--down { color: var(--warn); }
+
+/* --------------------------------------------------------------------------
+   Rail card: week summary
+   -------------------------------------------------------------------------- */
+.week__total {
+  margin-top: var(--sp-4);
+  font-size: 1.75rem;
+  font-weight: 350;
+  letter-spacing: var(--track-tight);
+  color: var(--ice-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.week__sub {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+}
+
+.bars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  align-items: end;
+  height: 76px;
+  margin: var(--sp-4) 0 var(--sp-2);
+}
+
+.bar { display: flex; flex-direction: column; height: 100%; gap: 6px; }
+
+.bar__slot { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+
+.bar__fill {
+  width: 100%;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, var(--ice-600), var(--ice-900));
+  transition: height var(--med) var(--ease);
+}
+
+.bar--today .bar__fill {
+  background: linear-gradient(180deg, var(--ice-200), var(--ice-500));
+  box-shadow: 0 0 18px -4px var(--glow-strong);
+}
+
+.bar__day { text-align: center; font-size: 0.625rem; color: var(--text-faint); }
+.bar--today .bar__day { color: var(--ice-200); }
+
+.week__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Rail card: AI insight
+   -------------------------------------------------------------------------- */
+.insight {
+  padding: var(--sp-4);
+  background:
+    radial-gradient(130% 100% at 0% 0%, rgba(188, 217, 233, 0.12), transparent 60%),
+    var(--panel);
+}
+
+.insight__kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.14em;
+  color: var(--ice-300);
+}
+
+.insight__title {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-lead);
+  font-weight: 400;
+  letter-spacing: var(--track-tight);
+  color: var(--ice-100);
+}
+
+.insight__body {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 44ch;
+}
+
+.insight__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--sp-4);
+  font-size: var(--fs-small);
+  color: var(--ice-200);
+}
+.insight__link:hover { color: #fff; }
+.insight__link svg { transition: transform var(--fast) var(--ease); }
+.insight__link:hover svg { transform: translateX(3px); }
+
+/* --------------------------------------------------------------------------
+   Rail card: up next
+   -------------------------------------------------------------------------- */
+.upnext__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+
+.upnext__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: var(--r-md);
+  background: var(--panel-raised);
+  color: var(--ice-300);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.upnext__name { font-size: var(--fs-small); color: var(--text); }
+.upnext__meta { font-size: var(--fs-micro); color: var(--text-faint); }
+
+.upnext__eta {
+  margin-inline-start: auto;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .dash { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .page-head { flex-direction: column; align-items: flex-start; }
+  .ring { width: 210px; height: 210px; }
+  .ring__time { font-size: 3rem; }
+  .stats { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+}

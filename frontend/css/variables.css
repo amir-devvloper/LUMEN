@@ -1,0 +1,84 @@
+/* ==========================================================================
+   LUMEN — design tokens
+   Palette: true black surfaces, ice (pale cyan-white) as the only accent.
+   ========================================================================== */
+
+:root {
+  /* surfaces */
+  --bg:           #000000;
+  --panel:        #0b0e11;
+  --panel-raised: #11161a;
+  --panel-inset:  #080a0c;
+  --line:         #1b2126;
+  --line-soft:    #141a1e;
+
+  /* ice ramp */
+  --ice-100: #f4fbff;
+  --ice-200: #dcedf7;
+  --ice-300: #bcd9e9;
+  --ice-400: #93bcd2;
+  --ice-500: #6e9cb4;
+  --ice-600: #4b7085;
+  --ice-700: #2d4653;
+  --ice-900: #101c22;
+
+  /* text */
+  --text:       #e9f2f7;
+  --text-soft:  #a8bcc7;
+  --text-muted: #6d8190;
+  --text-faint: #46565f;
+
+  /* accents / states */
+  --accent:        var(--ice-200);
+  --accent-strong: var(--ice-100);
+  --accent-dim:    var(--ice-500);
+  --glow:          rgba(188, 217, 233, 0.22);
+  --glow-strong:   rgba(220, 237, 247, 0.38);
+  --up:            #9fd8c8;
+  --warn:          #e0b98d;
+
+  /* type */
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+             "Helvetica Neue", Arial, sans-serif;
+
+  --fs-micro: 0.6875rem;
+  --fs-small: 0.8125rem;
+  --fs-body:  0.9375rem;
+  --fs-lead:  1.0625rem;
+  --fs-h2:    1.5rem;
+  --fs-h1:    1.875rem;
+  --fs-clock: 4.25rem;
+
+  --track-wide:  0.18em;
+  --track-tight: -0.02em;
+
+  /* geometry */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  --sidebar-w: 236px;
+  --shell-max: 1440px;
+  --player-h: 84px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 44px;
+
+  /* depth */
+  --shadow-panel: inset 0 1px 0 rgba(255, 255, 255, 0.03),
+                  0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  --shadow-lift:  0 24px 60px -30px rgba(0, 0, 0, 1);
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --fast: 140ms;
+  --med:  260ms;
+  --slow: 600ms;
+}

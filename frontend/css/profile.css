@@ -1,0 +1,188 @@
+/* ==========================================================================
+   LUMEN — profile page (account, library, settings)
+   ========================================================================== */
+
+.profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.profile__col { display: flex; flex-direction: column; gap: var(--sp-4); }
+
+/* --------------------------------------------------------------------------
+   Identity strip
+   -------------------------------------------------------------------------- */
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.identity__avatar {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: var(--r-pill);
+  object-fit: cover;
+  background: var(--panel-raised);
+  box-shadow: 0 0 0 1px var(--line), 0 0 30px -14px var(--glow-strong);
+}
+
+.identity__meta { min-width: 0; flex: 1; }
+
+.identity__name {
+  font-size: var(--fs-lead);
+  font-weight: 400;
+  letter-spacing: var(--track-tight);
+  color: var(--ice-100);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.identity__email {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --------------------------------------------------------------------------
+   At-a-glance facts
+   -------------------------------------------------------------------------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.fact__label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.fact__value {
+  margin-top: 4px;
+  font-size: 1.25rem;
+  font-weight: 350;
+  letter-spacing: var(--track-tight);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Playlists (shared shape with the music page rail)
+   -------------------------------------------------------------------------- */
+.playlist { border-radius: var(--r-md); transition: background var(--fast) var(--ease); }
+.playlist + .playlist { margin-top: 2px; }
+.playlist:hover { background: var(--line-soft); }
+
+.playlist__head { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2); }
+
+.playlist__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 1;
+  min-width: 0;
+  text-align: start;
+  color: var(--text-soft);
+}
+.playlist__toggle:hover { color: var(--text); }
+
+.playlist__chevron { flex: none; color: var(--text-faint); transition: transform var(--fast) var(--ease); }
+.playlist__toggle[aria-expanded="true"] .playlist__chevron { transform: rotate(90deg); }
+
+.playlist__name { font-size: var(--fs-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.playlist__count {
+  flex: none;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.playlist__system { flex: none; font-size: 0.625rem; letter-spacing: 0.08em; color: var(--ice-600); }
+
+.playlist__tracks {
+  padding: 0 var(--sp-2) var(--sp-2) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.playlist__track {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+}
+
+.playlist__track span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* --------------------------------------------------------------------------
+   Settings
+   -------------------------------------------------------------------------- */
+#settings { scroll-margin-top: var(--sp-5); }
+
+#settings:target {
+  box-shadow: var(--shadow-panel), 0 0 0 1px rgba(188, 217, 233, 0.28);
+}
+
+.setting { display: grid; gap: var(--sp-3); margin-top: var(--sp-4); }
+
+.setting--divided {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}
+
+.setting .btn { justify-self: start; }
+
+.field { display: grid; gap: 6px; }
+
+.field__label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.field input {
+  width: 100%;
+  padding: 11px var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel-inset);
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  transition: border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.field input:hover { border-color: var(--ice-700); }
+.field input:focus-visible {
+  outline: none;
+  border-color: var(--ice-400);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+.field input[aria-invalid="true"] { border-color: var(--warn); }
+
+.setting__hint { font-size: var(--fs-micro); line-height: 1.6; color: var(--text-muted); }
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .profile { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .page-head { flex-direction: column; align-items: flex-start; }
+  .identity { flex-wrap: wrap; }
+}

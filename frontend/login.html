@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Log in · LUMEN</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200..700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+  <main class="auth">
+    <div class="auth__brand brand">
+      <div class="brand__mark">LUMEN</div>
+      <div class="brand__tag">Music. Focus. Flow.</div>
+    </div>
+
+    <form class="panel auth__card enter enter--1" data-auth-form="login" novalidate>
+      <h1 class="auth__title">Welcome back</h1>
+      <p class="auth__sub">Log in to pick up your focus session.</p>
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+      </label>
+      <label class="field">
+        <span class="field__label">Password</span>
+        <input type="password" name="password" autocomplete="current-password" required />
+      </label>
+      <p class="auth__error" role="alert" data-auth-error hidden></p>
+      <button class="auth__submit" type="submit" data-auth-submit>Log in</button>
+      <p class="auth__alt">New to Lumen? <a href="signup.html">Create an account</a></p>
+    </form>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

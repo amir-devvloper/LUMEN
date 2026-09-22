@@ -1,0 +1,171 @@
+/* ==========================================================================
+   LUMEN — focus page
+   The session card / ring share the dashboard's design language; the page
+   loads only this file, so the rules it needs live here.
+   ========================================================================== */
+
+.focus {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(280px, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.focus__rail { display: flex; flex-direction: column; gap: var(--sp-4); }
+
+/* --------------------------------------------------------------------------
+   Session card — the hero
+   -------------------------------------------------------------------------- */
+.session {
+  position: relative;
+  overflow: hidden;
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(147, 188, 210, 0.10), transparent 62%),
+    var(--panel);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-panel);
+  text-align: center;
+}
+
+.session__mode {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.16em;
+  color: var(--text-soft);
+}
+
+.session__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--ice-200);
+  box-shadow: 0 0 10px 1px var(--glow-strong);
+}
+
+.session--idle .session__dot { background: var(--ice-700); box-shadow: none; }
+
+/* ring -------------------------------------------------------------------- */
+.ring {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: var(--sp-5) auto;
+}
+
+.ring__svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.ring__track { fill: none; stroke: #161c21; stroke-width: 6; }
+
+.ring__progress {
+  fill: none;
+  stroke: url(#iceStroke);
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--glow));
+  transition: stroke-dashoffset var(--slow) var(--ease);
+}
+
+.ring__body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ring__time {
+  font-size: var(--fs-clock);
+  font-weight: 250;
+  letter-spacing: var(--track-tight);
+  line-height: 1;
+  color: var(--ice-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.ring__meta { font-size: var(--fs-micro); letter-spacing: 0.1em; color: var(--text-soft); }
+.ring__share { font-size: var(--fs-micro); color: var(--text-faint); }
+
+/* controls ---------------------------------------------------------------- */
+.session__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+}
+
+.icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.icon-btn:disabled:hover { background: var(--panel-raised); color: var(--text-soft); }
+
+.session__next {
+  margin-top: var(--sp-4);
+  min-height: 1.5em;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Presets (rail)
+   -------------------------------------------------------------------------- */
+.presets { display: flex; flex-direction: column; gap: 6px; margin-top: var(--sp-4); }
+
+/* --------------------------------------------------------------------------
+   History (rail)
+   -------------------------------------------------------------------------- */
+.history { margin-top: var(--sp-3); }
+
+.history__row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+}
+.history__row + .history__row { border-top: 1px solid var(--line-soft); }
+
+.history__dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: var(--r-pill);
+  background: var(--ice-700);
+}
+.history__row--completed .history__dot {
+  background: var(--ice-200);
+  box-shadow: 0 0 8px 1px var(--glow);
+}
+
+.history__body { min-width: 0; flex: 1; }
+
+.history__mode {
+  font-size: var(--fs-small);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history__when { font-size: var(--fs-micro); color: var(--text-faint); }
+
+.history__time {
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .focus { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .page-head { flex-direction: column; align-items: flex-start; }
+  .ring { width: 210px; height: 210px; }
+  .ring__time { font-size: 3rem; }
+}
