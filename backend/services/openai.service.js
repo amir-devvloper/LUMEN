@@ -1,61 +1,40 @@
 /**
  * LUMEN AI focus insight generator.
  *
- * Uses the user's own focus analytics as input to OpenAI when
- * OPENAI_API_KEY is configured. If the key is missing or the API
- * is unavailable, we keep the original local rule-based insight.
+ * Uses the user's focus analytics as input to OpenAI.
+ * If there is no usable analytics data, it returns an honest local message.
+ * If OpenAI is configured but fails, the error is surfaced instead of
+ * silently pretending the result was AI-generated.
  */
 
 const db = require("../config/databse");
 const analytics = require("./analytics.service");
+const { ApiError } = require("../utils/helpers");
 
 function bestHourBlock(userId) {
   const row = db
     .prepare(
-      `SELECT CAST(strftime('%H', started_at, 'localtime') AS INTEGER) AS hour, COUNT(*) AS n
+      `SELECT CAST(strftime('%H', started_at, 'localtime') AS INTEGER) AS hour,
+              COUNT(*) AS n
        FROM focus_sessions
-       WHERE user_id = ? AND status = 'completed' AND started_at >= datetime('now', '-28 days')
-       GROUP BY hour ORDER BY n DESC, hour ASC LIMIT 1`
+       WHERE user_id = ?
+         AND status = 'completed'
+         AND started_at >= datetime('now', '-28 days')
+       GROUP BY hour
+       ORDER BY n DESC, hour ASC
+       LIMIT 1`
     )
     .get(userId);
+
   return row ? row.hour : null;
 }
 
-function buildLocalInsight(userId) {
-  const week = analytics.weekly(userId);
-  const pad = (n) => String(n).padStart(2, "0");
-
-  if (week.sessions === 0) {
-    return {
-      title: "Start your first session to unlock insights.",
-      body: "Once you complete a few focus sessions, Lumen AI will start spotting your best hours and patterns."
-    };
-  }
-
-  const hour = bestHourBlock(userId);
-  if (hour === null) {
-    return {
-      title: "Finish a full session to find your best window.",
-      body:
-        "You've started " +
-        week.sessions +
-        " session" +
-        (week.sessions === 1 ? "" : "s") +
-        " this week but none has run to the end yet. Complete one and Lumen AI can start spotting your rhythm."
-    };
-  }
-
-  const windowEnd = (hour + 2) % 24;
+function buildNoDataInsight() {
   return {
-    title: "Your best focus window starts around " + pad(hour) + ":00.",
+    title: "Complete a focus session to unlock LUMEN AI.",
     body:
-      "Your completion rate this week is " +
-      week.completionRate +
-      "%, with most finished sessions between " +
-      pad(hour) +
-      ":00 and " +
-      pad(windowEnd) +
-      ":00. Protecting that window tends to produce your longest runs."
+      "Once you have finished sessions, LUMEN AI will analyze your actual focus patterns and generate a personalized insight.",
+    source: "local"
   };
 }
 
@@ -67,6 +46,7 @@ function collectInsightData(userId) {
 
   return {
     period: "last 28 days",
+
     week: {
       range: week.range,
       focusedMinutes: Math.round(week.totalSeconds / 60),
@@ -74,8 +54,11 @@ function collectInsightData(userId) {
       completedSessions: week.completedSessions,
       abandonedSessions: week.abandonedSessions,
       completionRate: week.completionRate,
-      averageSessionMinutes: Math.round(week.averageSessionSeconds / 60)
+      averageSessionMinutes: Math.round(
+        week.averageSessionSeconds / 60
+      )
     },
+
     last28Days: {
       range: month.range,
       focusedMinutes: Math.round(month.totalSeconds / 60),
@@ -85,110 +68,180 @@ function collectInsightData(userId) {
       currentStreakDays: analytics.streak(userId),
       bestStreakDays: analytics.bestStreak(userId)
     },
+
     bestHour: hour,
-    topSounds: topSounds.map((s) => ({
-      name: s.name,
-      artist: s.meta,
-      focusedMinutes: Math.round(s.seconds / 60)
+
+    topSounds: topSounds.map((sound) => ({
+      name: sound.name,
+      artist: sound.meta,
+      focusedMinutes: Math.round(sound.seconds / 60)
     }))
-  };
-}
-
-function extractText(data) {
-  if (typeof data.output_text === "string" && data.output_text.trim()) {
-    return data.output_text.trim();
-  }
-
-  const parts = [];
-  for (const item of data.output || []) {
-    for (const content of item.content || []) {
-      if (typeof content.text === "string") parts.push(content.text);
-    }
-  }
-  return parts.join("\n").trim();
-}
-
-function parseInsight(text) {
-  try {
-    const parsed = JSON.parse(text);
-    if (
-      parsed &&
-      typeof parsed.title === "string" &&
-      typeof parsed.body === "string"
-    ) {
-      return {
-        title: parsed.title.trim(),
-        body: parsed.body.trim()
-      };
-    }
-  } catch (_) {
-    // The model was asked for JSON; if it still returns plain text,
-    // keep the response useful instead of crashing the analytics page.
-  }
-
-  return {
-    title: "Your latest focus pattern",
-    body: text.trim()
   };
 }
 
 async function generateInsight(userId) {
   const apiKey = process.env.OPENAI_API_KEY;
 
-  // Keep the portfolio demo useful even before an API key is configured.
-  if (!apiKey) return buildLocalInsight(userId);
+  if (!apiKey) {
+    throw new ApiError(
+      503,
+      "LUMEN AI is not configured on the server."
+    );
+  }
 
   const data = collectInsightData(userId);
 
   if (data.week.sessions === 0 && data.last28Days.sessions === 0) {
-    return buildLocalInsight(userId);
+    return buildNoDataInsight();
   }
 
   const prompt = [
-    "You are Lumen AI, a calm and concise productivity coach.",
+    "You are LUMEN AI, a calm and concise productivity coach.",
     "Analyze only the user's focus-session analytics below.",
-    "Do not invent facts or claim to know anything outside these numbers.",
-    "Return valid JSON with exactly two string fields: title and body.",
-    "The title should be short and specific.",
-    "The body should be 1-2 natural sentences with one useful observation or suggestion.",
-    "Do not mention that you are an AI or that a model was used.",
+    "Do not invent facts.",
+    "Do not use information outside the supplied analytics.",
+    "Return one concise personalized insight.",
+    "The title must be short and specific.",
+    "The body must be 1-2 natural sentences.",
+    "Give one useful observation or practical suggestion.",
+    "Do not mention being an AI model.",
     "Do not use markdown.",
     "",
     JSON.stringify(data, null, 2)
   ].join("\n");
 
   try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + apiKey
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
-        input: prompt,
-        max_output_tokens: 180
-      })
-    });
+    const response = await fetch(
+      "https://api.openai.com/v1/responses",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + apiKey
+        },
+        body: JSON.stringify({
+          model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
+
+          input: prompt,
+
+          max_output_tokens: 180,
+
+          text: {
+            format: {
+              type: "json_schema",
+              name: "lumen_insight",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  title: {
+                    type: "string"
+                  },
+                  body: {
+                    type: "string"
+                  }
+                },
+                required: ["title", "body"],
+                additionalProperties: false
+              }
+            }
+          }
+        })
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
-      return buildLocalInsight(userId);
+
+      console.error(
+        "OpenAI API error:",
+        response.status,
+        errorText
+      );
+
+      throw new ApiError(
+        502,
+        "LUMEN AI could not generate an insight right now."
+      );
     }
 
     const result = await response.json();
-    const text = extractText(result);
 
-    if (!text) {
-      return buildLocalInsight(userId);
+    let text = "";
+
+    if (
+      typeof result.output_text === "string" &&
+      result.output_text.trim()
+    ) {
+      text = result.output_text.trim();
+    } else {
+      for (const item of result.output || []) {
+        for (const content of item.content || []) {
+          if (
+            typeof content.text === "string" &&
+            content.text.trim()
+          ) {
+            text += content.text;
+          }
+        }
+      }
+
+      text = text.trim();
     }
 
-    return parseInsight(text);
+    if (!text) {
+      throw new ApiError(
+        502,
+        "LUMEN AI returned an empty insight."
+      );
+    }
+
+    let parsed;
+
+    try {
+      parsed = JSON.parse(text);
+    } catch (error) {
+      console.error(
+        "Invalid LUMEN AI JSON:",
+        text
+      );
+
+      throw new ApiError(
+        502,
+        "LUMEN AI returned an invalid insight."
+      );
+    }
+
+    if (
+      !parsed ||
+      typeof parsed.title !== "string" ||
+      typeof parsed.body !== "string"
+    ) {
+      throw new ApiError(
+        502,
+        "LUMEN AI returned an invalid insight."
+      );
+    }
+
+    return {
+      title: parsed.title.trim(),
+      body: parsed.body.trim(),
+      source: "openai"
+    };
   } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
     console.error("OpenAI request failed:", error);
-    return buildLocalInsight(userId);
+
+    throw new ApiError(
+      502,
+      "LUMEN AI is temporarily unavailable."
+    );
   }
 }
 
-module.exports = { generateInsight };
+module.exports = {
+  generateInsight
+};
