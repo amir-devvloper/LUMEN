@@ -29,6 +29,25 @@ function bestHourBlock(userId) {
   return row ? row.hour : null;
 }
 
+/**
+ * Count real completed focus sessions directly from focus_sessions.
+ * This avoids relying only on analytics_daily, which may lag behind
+ * or differ from the session data used by Session Mix.
+ */
+function completedSessionCount(userId) {
+  const row = db
+    .prepare(
+      `SELECT COUNT(*) AS n
+       FROM focus_sessions
+       WHERE user_id = ?
+         AND status = 'completed'
+         AND started_at >= datetime('now', '-28 days')`
+    )
+    .get(userId);
+
+  return row ? row.n : 0;
+}
+
 function buildNoDataInsight() {
   return {
     title: "Complete a focus session to unlock LUMEN AI.",
@@ -44,8 +63,12 @@ function collectInsightData(userId) {
   const topSounds = analytics.topSounds(userId, 3, 28);
   const hour = bestHourBlock(userId);
 
+  const completedSessions = completedSessionCount(userId);
+
   return {
     period: "last 28 days",
+
+    completedSessions,
 
     week: {
       range: week.range,
@@ -91,7 +114,11 @@ async function generateInsight(userId) {
 
   const data = collectInsightData(userId);
 
-  if (data.week.sessions === 0 && data.last28Days.sessions === 0) {
+  /*
+   * Use the actual completed session records as the source of truth.
+   * This keeps AI availability consistent with Session Mix.
+   */
+  if (data.completedSessions === 0) {
     return buildNoDataInsight();
   }
 
@@ -115,10 +142,12 @@ async function generateInsight(userId) {
       "https://api.openai.com/v1/responses",
       {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + apiKey
         },
+
         body: JSON.stringify({
           model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
 
@@ -131,17 +160,25 @@ async function generateInsight(userId) {
               type: "json_schema",
               name: "lumen_insight",
               strict: true,
+
               schema: {
                 type: "object",
+
                 properties: {
                   title: {
                     type: "string"
                   },
+
                   body: {
                     type: "string"
                   }
                 },
-                required: ["title", "body"],
+
+                required: [
+                  "title",
+                  "body"
+                ],
+
                 additionalProperties: false
               }
             }
@@ -233,7 +270,10 @@ async function generateInsight(userId) {
       throw error;
     }
 
-    console.error("OpenAI request failed:", error);
+    console.error(
+      "OpenAI request failed:",
+      error
+    );
 
     throw new ApiError(
       502,
