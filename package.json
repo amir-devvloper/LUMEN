@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "LUMEN — music, focus, flow. Express + SQLite backend and static frontend.",
   "main": "backend/server.js",
-"scripts": {
-  "start": "node backend/server.js",
-  "dev": "node --watch backend/server.js",
-  "seed": "node database/seed.js",
-  "start:seeded": "npm run seed && node backend/server.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-}
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "seed": "node database/seed.js",
+    "start:seeded": "npm run seed && node backend/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
