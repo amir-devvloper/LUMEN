@@ -1,0 +1,52 @@
+پروژه‌ی LUMEN را آپلود کرده‌ام (lumen.zip). همه‌ی صفحه‌ها و endpointها ساخته
+شده‌اند و کار می‌کنند؛ دو کار مانده است.
+
+۱) README.md — الان ۰ بایت است. بنویس:
+   - معرفی کوتاه پروژه
+   - پیش‌نیاز: Node >= 18
+   - نصب و اجرا: npm install، npm run seed، npm start (روی http://localhost:3000)
+   - کاربر دمو: amir@lumen.app / lumen1234
+   - ساختار پوشه‌ها
+   - فهرست کامل endpointها با متد و یک خط توضیح — شامل
+     PATCH /api/users/me و GET /api/analytics/monthly
+   - متغیرهای .env: PORT، NODE_ENV، DB_PATH، JWT_SECRET، JWT_EXPIRES_IN،
+     CORS_ORIGIN — با اشاره به اینکه backend/config/env.js خودش .env را
+     می‌خواند (بدون dotenv) و در production نباید JWT_SECRET پیش‌فرض بماند.
+   فهرست endpointها را از روی فایل‌های backend/routes/ استخراج کن، نه از حافظه.
+
+۲) تست واقعی با مرورگر.
+   اول npm install و npm run seed را بزن و سرور را بالا بیاور.
+   اگر npm install به‌خاطر نبودن شبکه شکست خورد، صریح بگو و همان‌جا متوقف شو —
+   با داده‌ی جعلی یا shim تست نکن.
+   اگر بالا آمد، با Playwright و کاربر دمو این جریان‌ها را اجرا کن، از هر صفحه
+   اسکرین‌شات بگیر و خطاهای کنسول را با page.on("console") و page.on("pageerror")
+   جمع کن:
+
+   - login  →  dashboard
+   - music: جستجو، تب Ambient، تب Favorites، زدن قلب، play (باید در player bar
+     بنشیند)، ساخت playlist، افزودن آهنگ با دکمه‌ی +، باز کردن playlist،
+     حذف آهنگ از playlist، حذف playlist
+   - focus: انتخاب preset و آهنگ، start → pause → resume → complete؛
+     بعد از start یک‌بار reload کن و مطمئن شو جلسه از /api/focus/active
+     برمی‌گردد و تایمر از remainingSeconds ادامه می‌دهد
+   - analytics: دکمه‌ی Month — نمودار باید ۳۰ ستون شود، برچسب بازه عوض شود،
+     و heatmap همچنان ۷ ستون بماند
+   - ai: لینک «See how this was measured» در dashboard باید به اینجا بیاید
+     و عددها پر شوند
+   - profile: تغییر هدف روزانه به ۳۰۰ (باید ذخیره شود)، تلاش با ۱۰ (باید
+     خطای ۴۰۰ نشان دهد)، و sign out
+   - signup با یک ایمیل جدید → باید به onboarding.html برود؛ هر سه مرحله را
+     کامل کن و ببین به dashboard می‌رسی
+
+   هر خطای کنسول یا باگ رفتاری را همان‌جا رفع کن.
+
+قواعد پروژه بدون تغییر:
+ - هیچ کتابخانه‌ی جدیدی در بک‌اند یا فرانت (فقط better-sqlite3، cors، express)
+ - سبک فرانت همان IIFE و namespace LUMEN، بدون bundler
+ - هر متن دیتابیس با LUMEN.ui.esc
+ - روی SVG از toggleAttribute("hidden") استفاده کن، نه .hidden
+ - اگر endpoint جدیدی لازم شد: routes → controllers → services،
+   با asyncHandler و ApiError
+
+در پایان lumen.zip را تحویل بده (بدون node_modules و بدون database/lumen.db)
+و فهرست تغییرها، اسکرین‌شات‌ها و هر چیزی که نتوانستی تست کنی را بنویس.
